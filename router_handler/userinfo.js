@@ -27,7 +27,7 @@ exports.updateUserInfo = (req, res) => {
 	//定义 SQL 语句
 	// console.log(req.body);
 	const sql = `update ev_users set ? where id=?`;
-	db.query(sql, [req.body, req.body.id], (err, results) => {
+	db.query(sql, [req.body, req.user.id], (err, results) => {
 		// 执行 SQL 语句失败
 		if (err) return res.cc(err);
 
@@ -67,5 +67,19 @@ exports.updatePassword = (req, res) => {
 
 			res.cc('更新密码成功!', 0);
 		});
+	});
+};
+
+//更换头像的处理函数
+exports.updateAvatar = (req, res) => {
+	// 1.定义 SQL 语句
+	const sql = `update ev_users set user_pic=? where id=?`;
+	//调用 db 函数
+	db.query(sql, [req.body.avatar, req.user.id], (err, results) => {
+		if (err) return res.cc(err);
+
+		if (results.affectedRows !== 1) return res.cc('更新用户头像失败!');
+
+		res.cc('更新用户头像成功!', 0);
 	});
 };

@@ -38,6 +38,18 @@ app.use('/api', userRouter);
 const userinfoRouter = require('./router/userinfo');
 app.use('/my', userinfoRouter); // 注意：以 /my 开头的接口，都是有权限的接口，需要进行 Token 身份认证
 
+// 导入并使用文章分类路由模块
+const artCateRouter = require('./router/artcate');
+// 为文章分类的路由挂载统一的访问前缀 /my/article
+app.use('/my/article', artCateRouter);
+
+//导入并使用文章管理路由模块
+const articleRouter = require('./router/article');
+// 托管静态资源文件
+app.use('/uploads', express.static('./uploads'));
+// 为文章的路由挂载统一的访问前缀 /my/article
+app.use('/my/article', articleRouter);
+
 //! 6. 错误处理中间件
 app.use((err, req, res, next) => {
 	// 数据验证失败

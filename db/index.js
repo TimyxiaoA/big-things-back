@@ -7,8 +7,8 @@ const db = mysql.createPool({
 	password: 'root',
 	database: 'my_db_01'
 });
-db.query('select 1', (err, results) => {
+/* db.query('select 1', (err, results) => {
 	console.log(results);
-});
+}); */
 // 向外共享 db 数据库连接对象
 module.exports = db;

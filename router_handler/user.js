@@ -6,6 +6,11 @@ const db = require('../db/index');
 //导入加密模块
 const bcrypt = require('bcryptjs');
 
+// 用这个包来生成 Token 字符串
+const jwt = require('jsonwebtoken');
+// 导入配置文件
+const config = require('../config');
+
 //注册用户的处理函数
 exports.regUser = (req, res) => {
 	//获取客户端提交服务器的用户信息
@@ -81,6 +86,16 @@ exports.login = (req, res) => {
 		const compareResult = bcrypt.compareSync(userinfo.password, results[0].password);
 		// console.log(userinfo.password, results[0].password, compareResult);
 		if (!compareResult) return res.cc('登陆失败');
-		res.cc('ok');
+
+		//在服务器端生成 token 字符串 剔除用户密码 用户头像
+		const user = { ...results[0], password: '', user_pic: '' };
+		// 对用户信息进行加密生成 Token 字符串  // token 有效期为 10 个小时
+		const tokenStr = jwt.sign(user, config.jwtSecretKey, { expiresIn: '10h' });
+
+		res.send({
+			status: 0,
+			message: '登录成功!',
+			token: 'Bearer ' + tokenStr
+		});
 	});
 };
